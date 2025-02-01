@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            text-align: center;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .output {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .binary-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .bit {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid black;
+            font-size: 18px;
+            margin: 2px;
+        }
+        .highlight {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Pattern Detection Agent</h2>
+
+    <input type="text" id="binaryInput" placeholder="Enter binary string (0s & 1s)">
+    <button onclick="detectPattern()">Detect Pattern</button>
+
+    <div class="output" id="outputText">Output: </div>
+
+    <div class="binary-container" id="binaryDisplay"></div>
+
+    <script>
+        async function detectPattern() {
+            let inputStr = document.getElementById("binaryInput").value;
+
+            try {
+                let response = await fetch("http://127.0.0.1:5000/detect", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ bit_str: inputStr })
+                });
+
+                let data = await response.json();
+                if (response.ok) {
+                    document.getElementById("outputText").innerText = "Output: " + data.output;
+                    visualizeBinary(inputStr, data.output);
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Server error.");
+            }
+        }
+
+        function visualizeBinary(inputStr, outputStr) {
+            let container = document.getElementById("binaryDisplay");
+            container.innerHTML = "";
+
+            for (let i = 0; i < inputStr.length; i++) {
+                let div = document.createElement("div");
+                div.classList.add("bit");
+                div.innerText = inputStr[i];
+
+                if (outputStr[i] === '1') {
+                    div.classList.add("highlight");
+                }
+
+                container.appendChild(div);
+            }
+        }
+    </script>
+
+</body>
+</html>
