@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__) # Set up app
-CORS(app)
+CORS(app, origins=["https://maatthw.github.io/PA1/"])
 
 def find_pattern(bit_str):
     state = 0 # The initial state is S0, where the agent is simply waiting
@@ -67,4 +67,4 @@ for i in range(len(outputs)):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=10000)
